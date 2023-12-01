@@ -18,8 +18,16 @@ npm init -y
 ***
 Criar arquivo .gitignore: arquivos e pastas que não vão para o github
 ***
+*Cria o arquivo package.json para gerenciare os pacotes da aplicação
+
+#   instalar pacotes da API:
+* express: será o servidor da api
+* nodemon: atualizar os arquivos alterados
+* mysql2: integrar aplicação com o banco de dados
+* dotenv:
 touch .gitignore
 ***
+* Arquivo responsavel por ignorar arquivos e pastas no github, ou seja, não serão visiveis no repositório remoto
 Criar arquivo .env: armazenará as variáveis do ambiente
 ***
 touch .env
@@ -41,12 +49,17 @@ Criar pasta src para estrutura do projeto
 ***
 mkdir src
 ***
+* Pasta responsavel por organizar a estrutura da API 
 Criar arquivo server.js na pasta src
 ***
 touch src/server.js
 ***
+* Arquivo responsavel por rodar a aplicação(API)
+***
 Configurar o servidor
 ***
+* colar codigo no server.js: 
+
 // Importar pacote do express
 const express = require('express');
 // Instanciar o express na variavel app
@@ -61,13 +74,19 @@ app.listen(PORT, () => console.log(`Running at port ${PORT}`))
 ***
 
 Criar comando para o servidor
-***
+
+* Criar comando para rodar o servidor no arquivo: 'package.js', dentro das chaves "scripts" no codigo abaixo:
+<img src="./imagens/package-json.png">
+ substitua a linha do "test" INTEIRO, pelo codigo abaixo:
+
+```
 "start":"nodemon src/server.js"
-***
+```
+* Este comando é responsavel por rodar a API
 
 Rodar o comando no terminal com GitBash
 ***
-npm run star
+npm run start
 ***
 
 ### Criar estrutura para o projeto
@@ -77,19 +96,65 @@ Criar arquivo app.js na pasta src
 touch src/app.js
 ```
 
+* Arquivo responsavel da configuração no arquivo 'app.js':
+```
+// Importar pacote do express
+const express = require('express');
+
+// Instanciar o express na variavel app
+const app = express();
+app.use(express.json());
+
+// Importar as rotas para serem executadas na aplicação
+const crudRouter = require('./routes/crudRouter');
+// Importar as rotas para serem executadas na aplicação
+const alunosRouter = require('./routes/alunosRouter');
+
+// Importar o pacote detenv
+const dotenv = require('dotenv').config();
+
+// HABILITAR A UTILIZAÇÃO DO CRUDROUTER
+app.use('/api', crudRouter);
+// HABILITAR A UTILIZAÇÃO DO CRUDROUTER
+app.use('/api', alunosRouter);
+
+// Setar a porta do servidor, a partir do arquivo .env
+app.set('port', process.env.PORT);
+
+// Exportar as configura ções do app para outros arquivos acessarem
+module.exports = app;
+```
 ### Rodar o comando 'npm i' sempre que fizer um clone do GitHub
 
-### Criar o arquivo .env e o .env.example
+### Criar o arquivo .env.example
 
-```
-touch .env
-```
 * Criar arquivo para salvar as variáveis necessárias da aplicação sem os valores
 ```
 touch .env.example
 ```
 
+* Arquivos responsavel por definir as varievais de ambiente sem o valores
+
+Colar as variaveis no arquivo '.env' segue o codigo abaixo:
+```
+# Definição da porta do servidos express
+PORT = 3008
+
+# Variáveis de conexão com banco
+DB_HOST = 'localhost'
+DB_USER = 'root'
+DB_PASSWORD =  'root'
+DB_DATABASE = 'turma_2at'
+// DB_PORT = ''
+```
+* Por padrão o pacote mysql2, espera a conexão com banco na porta 3306
+* Se o MYSQLworkbench não foi instalado na porta 3306, precisamos informar a porta correspondente no arquivo .env
+
+
+
+----------------------
 * Criar pasta routes
+
 ```
 mkdir routes
 ```
